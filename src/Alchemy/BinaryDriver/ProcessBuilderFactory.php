@@ -151,7 +151,7 @@ class ProcessBuilderFactory implements ProcessBuilderFactoryInterface
         
         array_unshift($arguments, $this->binary);
         
-        $process = new Process(implode(' ', $arguments);
+        $process = new Process(implode(' ', $arguments));
         
         return $process;
     }
