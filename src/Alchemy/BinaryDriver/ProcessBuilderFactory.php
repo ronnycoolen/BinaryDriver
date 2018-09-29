@@ -12,7 +12,7 @@
 namespace Alchemy\BinaryDriver;
 
 use Alchemy\BinaryDriver\Exception\InvalidArgumentException;
-use Symfony\Component\Process\ProcessBuilder;
+use Symfony\Component\Process\Process;
 
 class ProcessBuilderFactory implements ProcessBuilderFactoryInterface
 {
@@ -74,7 +74,7 @@ class ProcessBuilderFactory implements ProcessBuilderFactoryInterface
      */
     public function getBuilder()
     {
-        return $this->builder;
+        return null;
     }
 
     /**
@@ -83,10 +83,8 @@ class ProcessBuilderFactory implements ProcessBuilderFactoryInterface
      * @param  ProcessBuilder        $builder
      * @return ProcessBuilderFactory
      */
-    public function setBuilder(ProcessBuilder $builder)
+    public function setBuilder($builder)
     {
-        $this->builder = $builder;
-
         return $this;
     }
 
@@ -150,18 +148,12 @@ class ProcessBuilderFactory implements ProcessBuilderFactoryInterface
         if (!is_array($arguments)) {
             $arguments = array($arguments);
         }
-
-        if (static::$emulateSfLTS) {
-            array_unshift($arguments, $this->binary);
-
-            return ProcessBuilder::create($arguments)
-                ->setTimeout($this->timeout)
-                ->getProcess();
-        } else {
-            return $this->builder
-                ->setArguments($arguments)
-                ->getProcess();
-        }
+        
+        array_unshift($arguments, $this->binary);
+        
+        $process = new Process(implode(' ', $arguments));
+        
+        return $process;
     }
 
     private function detectEmulation()
